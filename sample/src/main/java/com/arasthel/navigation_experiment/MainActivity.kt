@@ -11,6 +11,7 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
 import com.arasthel.navigation.*
 import com.arasthel.navigation.annotations.RegisterScreen
 import com.arasthel.navigation.base.NavigationActivity
@@ -97,6 +98,10 @@ class TestFragment: NavigationFragment(R.layout.fragment_first) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         view.setBackgroundColor(color)
 
         val screen = getScreen<TestFragmentScreen>()

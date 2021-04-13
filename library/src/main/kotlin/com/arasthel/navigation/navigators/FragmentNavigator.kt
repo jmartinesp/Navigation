@@ -92,7 +92,7 @@ class FragmentNavigator(
                 }
 
                 transaction.add(containerId, fragment, getFragmentTag(count))
-                        .commitNow()
+                        .commit()
 
                 if (currentFragment != null && transitionAnimation != null) {
                     transitionAnimation.applyAfterFragmentTransaction(currentFragment, fragment)
@@ -116,7 +116,7 @@ class FragmentNavigator(
             closingAnimation?.toCloseTransition()?.applyBeforeFragmentTransaction(transaction, currentFragment, previousFragment)
             transaction.remove(currentFragment)
                     .attach(previousFragment)
-                    .commitNow()
+                    .commit()
 
             closingAnimation?.toCloseTransition()?.applyAfterFragmentTransaction(currentFragment, previousFragment)
         } else {
@@ -184,7 +184,7 @@ class FragmentNavigator(
             }
             if (destinationFragment.isDetached) transaction.attach(destinationFragment)
 
-            transaction.commitNow()
+            transaction.commit()
 
             return true
         } else {
@@ -214,7 +214,7 @@ class FragmentNavigator(
             }
         }
 
-        transaction.commitNow()
+        transaction.commit()
 
         return true
     }
@@ -235,7 +235,7 @@ class FragmentNavigator(
             }
         }
 
-        transaction.commitNow()
+        transaction.commit()
 
         return true
     }
@@ -267,7 +267,7 @@ class FragmentNavigator(
 
                 val index = if (count == 0) 0 else count-1
                 transaction.add(containerId, destinationFragment, getFragmentTag(index))
-                        .commitNow()
+                        .commit()
 
                 transitionAnimation?.applyAfterFragmentTransaction(currentFragment, destinationFragment)
             }
@@ -301,7 +301,7 @@ class FragmentNavigator(
                 }
 
                 transaction.add(containerId, destinationFragment, getFragmentTag(0))
-                        .commitNow()
+                        .commit()
 
                 if (count > 0) {
                     transitionAnimation?.applyAfterFragmentTransaction(fragments.last(), destinationFragment)
