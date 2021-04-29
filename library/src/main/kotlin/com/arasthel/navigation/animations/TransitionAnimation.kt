@@ -61,10 +61,7 @@ open class SimpleTransitionAnimation(
         private val exit: Transition
 ): TransitionAnimation {
     override fun applyBeforeFragmentTransaction(transaction: FragmentTransaction, sourceFragment: Fragment?, destinationFragment: Fragment) {
-        sourceFragment?.apply {
-//            view?.let { exit.addTarget(it) }
-            exitTransition = exit
-        }
+        sourceFragment?.exitTransition = exit
         destinationFragment.enterTransition = enter
         destinationFragment.allowEnterTransitionOverlap = true
     }

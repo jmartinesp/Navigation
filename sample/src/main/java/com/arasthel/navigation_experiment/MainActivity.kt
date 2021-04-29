@@ -51,9 +51,9 @@ class MainActivity : NavigationActivity(R.layout.activity_main) {
         }
 
         findViewById<Button>(R.id.backButton).setOnClickListener {
-//            childNavigator.pop()
+            childNavigator.pop()
 //            TestFragment.count--
-            navigator.push(OtherScreen("ASDA").noAnimation())
+//            navigator.push(OtherScreen("ASDA").noAnimation())
         }
 
 //        val switcherNavigator = bindSwitcherNavigator(R.id.navContainer)
@@ -96,11 +96,12 @@ class TestFragment: NavigationFragment(R.layout.fragment_first) {
 
     private val navigator by parentNavigator()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
 
         view.setBackgroundColor(color)
 

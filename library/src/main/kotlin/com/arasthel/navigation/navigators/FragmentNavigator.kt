@@ -92,11 +92,12 @@ class FragmentNavigator(
                 }
 
                 transaction.add(containerId, fragment, getFragmentTag(count))
+                        .runOnCommit {
+                            if (currentFragment != null && transitionAnimation != null) {
+                                transitionAnimation.applyAfterFragmentTransaction(currentFragment, fragment)
+                            }
+                        }
                         .commit()
-
-                if (currentFragment != null && transitionAnimation != null) {
-                    transitionAnimation.applyAfterFragmentTransaction(currentFragment, fragment)
-                }
             }
         }
     }
@@ -116,9 +117,10 @@ class FragmentNavigator(
             closingAnimation?.toCloseTransition()?.applyBeforeFragmentTransaction(transaction, currentFragment, previousFragment)
             transaction.remove(currentFragment)
                     .attach(previousFragment)
+                    .runOnCommit {
+                        closingAnimation?.toCloseTransition()?.applyAfterFragmentTransaction(currentFragment, previousFragment)
+                    }
                     .commit()
-
-            closingAnimation?.toCloseTransition()?.applyAfterFragmentTransaction(currentFragment, previousFragment)
         } else {
             parent?.pop()
         }
@@ -267,9 +269,10 @@ class FragmentNavigator(
 
                 val index = if (count == 0) 0 else count-1
                 transaction.add(containerId, destinationFragment, getFragmentTag(index))
+                        .runOnCommit {
+                            transitionAnimation?.applyAfterFragmentTransaction(currentFragment, destinationFragment)
+                        }
                         .commit()
-
-                transitionAnimation?.applyAfterFragmentTransaction(currentFragment, destinationFragment)
             }
         }
     }
@@ -301,11 +304,12 @@ class FragmentNavigator(
                 }
 
                 transaction.add(containerId, destinationFragment, getFragmentTag(0))
+                        .runOnCommit {
+                            if (count > 0) {
+                                transitionAnimation?.applyAfterFragmentTransaction(fragments.last(), destinationFragment)
+                            }
+                        }
                         .commit()
-
-                if (count > 0) {
-                    transitionAnimation?.applyAfterFragmentTransaction(fragments.last(), destinationFragment)
-                }
             }
         }
     }
