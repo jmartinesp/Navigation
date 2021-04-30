@@ -53,7 +53,7 @@ open class NavigationFragment(): Fragment(), LifecycleAwareNavigationComponent {
         return layoutRes?.let { inflater.inflate(it, container, false) }
     }
 
-    private val onBackPressedCallback = object: OnBackPressedCallback(false) {
+    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             goBack()
         }
@@ -63,13 +63,12 @@ open class NavigationFragment(): Fragment(), LifecycleAwareNavigationComponent {
         super.onAttach(context)
 
         (context as AppCompatActivity).onBackPressedDispatcher.addCallback(onBackPressedCallback)
-        onBackPressedCallback.isEnabled = true
     }
 
     override fun onDetach() {
         super.onDetach()
 
-        onBackPressedCallback.isEnabled = false
+        onBackPressedCallback.remove()
     }
 
     override fun bindChildNavigator(id: String, @IdRes containerId: Int): FragmentNavigator {

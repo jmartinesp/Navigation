@@ -1,13 +1,14 @@
 package com.arasthel.navigation.navigators
 
-import android.app.ActivityOptions
 import android.content.Intent
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import com.arasthel.navigation.AppNavigator
+import com.arasthel.navigation.base.NavigationComponent
 import com.arasthel.navigation.screen.ActivityDestination
 import com.arasthel.navigation.screen.Screen
 import com.arasthel.navigation.screen.ScreenResult
-import com.arasthel.navigation.base.NavigationComponent
 
 class ActivityNavigator(
     id: String,
@@ -32,7 +33,7 @@ class ActivityNavigator(
         val screen = navigationInstruction.screen
         val destination = screenRegistry.getDestination(screen) as? ActivityDestination ?: return
         val intent = destination.createIntent(currentActivity, screen, id)
-        val activityId = (this.currentActivity as? NavigationComponent)?.let { it.navigationId }
+        val activityId = (this.currentActivity as? NavigationComponent)?.navigationId
         (fromId ?: activityId)?.let { intent.putExtra(PARENT_SCREEN_CLASS, it) }
 
         val animationData = navigationInstruction.animationData
@@ -42,12 +43,10 @@ class ActivityNavigator(
         }
 
         val options = if (animationData != null)
-            ActivityOptions.makeSceneTransitionAnimation(currentActivity).toBundle()
+            ActivityOptionsCompat.makeSceneTransitionAnimation(currentActivity).toBundle()
             else null
-        currentActivity.startActivity(intent, options)
-        animationData?.toActivityAnimation()?.let {
-            it.applyAfterActivityStarted(currentActivity)
-        }
+        ActivityCompat.startActivity(currentActivity, intent, options)
+        animationData?.toActivityAnimation()?.applyAfterActivityStarted(currentActivity)
     }
 
     override fun pop() {
@@ -67,7 +66,7 @@ class ActivityNavigator(
         val destination = screenRegistry.getDestination(screen) as? ActivityDestination ?: return false
         val intent = destination.createIntent(context, screen, id)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        context.startActivity(intent)
+        ActivityCompat.startActivity(context, intent, null)
         return true
     }
 
@@ -76,13 +75,11 @@ class ActivityNavigator(
     }
 
     override fun replace(navigationInstruction: NavigationInstruction) {
-        val context = currentActivity ?: return
+        val currentActivity = currentActivity ?: return
         val screen = navigationInstruction.screen
 
-        val currentActivity = this.currentActivity
-
         val destination = screenRegistry.getDestination(screen) as? ActivityDestination ?: return
-        val intent = destination.createIntent(context, screen, id)
+        val intent = destination.createIntent(currentActivity, screen, id)
 
         val animationData = navigationInstruction.animationData
         intent.extras?.let { extras ->
@@ -91,18 +88,14 @@ class ActivityNavigator(
         }
 
         val options = if (animationData != null)
-            ActivityOptions.makeSceneTransitionAnimation(currentActivity).toBundle()
+            ActivityOptionsCompat.makeSceneTransitionAnimation(currentActivity).toBundle()
             else null
-        context.startActivity(intent, options)
+        ActivityCompat.startActivity(currentActivity, intent, options)
 
-        currentActivity?.let {
-            navigationInstruction.animationData?.toActivityAnimation()?.applyAfterActivityStarted(it)
-        }
+        navigationInstruction.animationData?.toActivityAnimation()?.applyAfterActivityStarted(currentActivity)
 
-        context.finishAfterTransition()
-        currentActivity?.let {
-            navigationInstruction.animationData?.toActivityAnimation()?.applyAfterActivityFinished(it)
-        }
+        currentActivity.finishAfterTransition()
+        navigationInstruction.animationData?.toActivityAnimation()?.applyAfterActivityFinished(currentActivity)
     }
 
     override fun reset(navigationInstruction: NavigationInstruction) {
@@ -119,12 +112,10 @@ class ActivityNavigator(
         }
 
         val options = if (animationData != null)
-            ActivityOptions.makeSceneTransitionAnimation(currentActivity).toBundle()
+            ActivityOptionsCompat.makeSceneTransitionAnimation(currentActivity).toBundle()
             else null
-        currentActivity.startActivity(intent, options)
-        animationData?.toActivityAnimation()?.let {
-            it.applyAfterActivityStarted(currentActivity)
-        }
+        ActivityCompat.startActivity(currentActivity, intent, options)
+        animationData?.toActivityAnimation()?.applyAfterActivityStarted(currentActivity)
     }
 
 }

@@ -4,11 +4,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.arasthel.navigation.base.LifecycleAwareNavigationComponent
-import com.arasthel.navigation.base.NavigationActivity
 import com.arasthel.navigation.base.NavigationComponent
-import com.arasthel.navigation.base.NavigationFragment
 import com.arasthel.navigation.navigators.Navigator
-import java.lang.IllegalArgumentException
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -26,6 +23,8 @@ class LazyParentNavigatorProperty(
                         is NavigationComponent -> owner.getParentNavigator()
                         else -> throw IllegalArgumentException("Binding object is not a NavigationActivity or NavigationFragment")
                     }
+                } else if (event == Lifecycle.Event.ON_STOP) {
+                    parentNavigator = null
                 }
             }
         })
