@@ -52,19 +52,7 @@ class MainActivity : NavigationActivity(R.layout.activity_main) {
 
         findViewById<Button>(R.id.backButton).setOnClickListener {
             childNavigator.pop()
-//            TestFragment.count--
-//            navigator.push(OtherScreen("ASDA").noAnimation())
         }
-
-//        val switcherNavigator = bindSwitcherNavigator(R.id.navContainer)
-//
-//        findViewById<Button>(R.id.nextButton).setOnClickListener {
-//            switcherNavigator.switchTo(TestFragmentScreen(1))
-//        }
-//
-//        findViewById<Button>(R.id.backButton).setOnClickListener {
-//            switcherNavigator.switchTo(TestFragmentScreen(2))
-//        }
     }
 
     override fun onResume() {
@@ -113,9 +101,7 @@ class TestFragment: NavigationFragment(R.layout.fragment_first) {
         super.onResume()
 
         view?.setOnClickListener {
-//            getParentNavigator()?.popWithResult(TestResult(Random.nextInt()))
-//            count--
-            navigator?.reset(OtherScreen("HEHE").fade())
+            navigator?.push(OtherScreen("Some text").vertical())
         }
     }
 
