@@ -103,7 +103,7 @@ class ActivityNavigator(
         val screen = navigationInstruction.screen
         val destination = screenRegistry.getDestination(screen) as? ActivityDestination ?: return
         val intent = destination.createIntent(currentActivity, screen, id)
-        if (navigationInstruction.activityOptions?.overrideFlags == true) {
+        if (navigationInstruction.activityOptions?.useDefaultIntentFlags == false) {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 

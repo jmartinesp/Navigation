@@ -52,7 +52,7 @@ fun NavigationInstruction.fragmentOptions(builder: FragmentOptions.() -> Unit): 
 }
 
 class ActivityOptions {
-    var overrideFlags: Boolean = true
+    var useDefaultIntentFlags: Boolean = true
 }
 
 class FragmentOptions {
