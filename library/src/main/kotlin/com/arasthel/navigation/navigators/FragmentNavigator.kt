@@ -3,6 +3,7 @@ package com.arasthel.navigation.navigators
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.arasthel.navigation.*
 import com.arasthel.navigation.animations.AnimationData
 import com.arasthel.navigation.base.NavigationFragment
@@ -97,7 +98,7 @@ class FragmentNavigator(
                                 transitionAnimation.applyAfterFragmentTransaction(currentFragment, fragment)
                             }
                         }
-                        .commit()
+                        .commit(navigationInstruction.fragmentOptions)
             }
         }
     }
@@ -272,7 +273,7 @@ class FragmentNavigator(
                         .runOnCommit {
                             transitionAnimation?.applyAfterFragmentTransaction(currentFragment, destinationFragment)
                         }
-                        .commit()
+                        .commit(navigationInstruction.fragmentOptions)
             }
         }
     }
@@ -309,7 +310,7 @@ class FragmentNavigator(
                                 transitionAnimation?.applyAfterFragmentTransaction(fragments.last(), destinationFragment)
                             }
                         }
-                        .commit()
+                        .commit(navigationInstruction.fragmentOptions)
             }
         }
     }
@@ -319,4 +320,16 @@ class FragmentNavigator(
         return "STACK_FRAGMENT_${containerId}_$indexValue"
     }
 
+}
+
+private fun FragmentTransaction.commit(options: FragmentOptions?) {
+    if (options == null) {
+        commit()
+    } else if (options.allowStateLoss && !options.immediate) {
+        commitAllowingStateLoss()
+    } else if (!options.allowStateLoss && options.immediate) {
+        commitNow()
+    } else {
+        commitNowAllowingStateLoss()
+    }
 }
