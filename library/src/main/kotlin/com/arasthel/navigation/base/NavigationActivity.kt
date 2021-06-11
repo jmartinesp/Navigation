@@ -36,6 +36,8 @@ open class NavigationActivity: AppCompatActivity, LifecycleAwareNavigationCompon
         val transitionAnimation = AnimationData.getAnimationFrom(intent.extras)
         if (transitionAnimation != null) {
             window?.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+            window?.allowEnterTransitionOverlap = true
+            window?.allowReturnTransitionOverlap = true
             transitionAnimation.toOpenTransition()?.applyAfterActivityStarted(this)
             transitionAnimation.toCloseTransition()?.applyAfterActivityFinished(this)
         }
