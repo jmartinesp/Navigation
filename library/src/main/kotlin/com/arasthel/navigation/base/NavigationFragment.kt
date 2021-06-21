@@ -1,6 +1,5 @@
 package com.arasthel.navigation.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,11 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import com.arasthel.navigation.navigators.FragmentNavigator
 import com.arasthel.navigation.navigators.Navigator
 import com.arasthel.navigation.navigators.SwitcherNavigator
 import com.arasthel.navigation.screen.Screen
-import com.arasthel.navigation.utils.ActivityConverter
 import com.arasthel.navigation.utils.FragmentConverter
 import com.arasthel.navigation.viewmodel.bindContext
 import com.arasthel.navigation.viewmodel.getNavigationContext
@@ -31,6 +27,12 @@ open class NavigationFragment(): Fragment(), LifecycleAwareNavigationComponent {
 
     lateinit var fragmentId: String
     override val navigationId: String by lazy { fragmentId }
+
+    protected val onBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            goBack()
+        }
+    }
 
     constructor(@LayoutRes layoutRes: Int): this() {
         this.layoutRes = layoutRes
@@ -53,22 +55,13 @@ open class NavigationFragment(): Fragment(), LifecycleAwareNavigationComponent {
         return layoutRes?.let { inflater.inflate(it, container, false) }
     }
 
-    private val onBackPressedCallback = object: OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            goBack()
-        }
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        (context as AppCompatActivity).onBackPressedDispatcher.addCallback(onBackPressedCallback)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-
-        onBackPressedCallback.remove()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     override fun bindChildNavigator(id: String, @IdRes containerId: Int): FragmentNavigator {
