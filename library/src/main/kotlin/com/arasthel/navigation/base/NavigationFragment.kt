@@ -150,8 +150,3 @@ inline fun <reified S: Screen> NavigationFragment.getScreen(): S {
     val fragmentConverter = FragmentConverter(S::class.java, this::class.java)
     return fragmentConverter.getScreen(this)
 }
-
-inline fun <reified S: Screen> NavigationActivity.getScreen(): S {
-    val activityConverter = ActivityConverter(S::class.java, this::class.java)
-    return activityConverter.getScreen(this)
-}

@@ -5,10 +5,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import com.arasthel.navigation.AppNavigator
+import com.arasthel.navigation.base.NavigationActivity
 import com.arasthel.navigation.base.NavigationComponent
 import com.arasthel.navigation.screen.ActivityDestination
 import com.arasthel.navigation.screen.Screen
 import com.arasthel.navigation.screen.ScreenResult
+import com.arasthel.navigation.utils.ActivityConverter
 
 class ActivityNavigator(
     id: String,
@@ -124,4 +126,22 @@ class ActivityNavigator(
 
 fun MainActivityNavigator(): ActivityNavigator {
     return ActivityNavigator("APP_ACTIVITY_NAVIGATOR", null)
+}
+
+fun <S: Screen> NavigationActivity.getScreenOrNull(intent: Intent?, clazz: Class<S>): S? {
+    if (intent == null) return null
+    val converter = ActivityConverter(clazz, this::class.java)
+    return converter.getScreenOrNull(intent)
+}
+
+fun <S: Screen> NavigationActivity.getScreen(intent: Intent?, clazz: Class<S>): S {
+    return getScreenOrNull(intent, clazz)!!
+}
+
+inline fun <reified S: Screen> NavigationActivity.getScreenOrNull(intent: Intent?): S? {
+    return getScreenOrNull(intent, S::class.java)
+}
+
+inline fun <reified S: Screen> NavigationActivity.getScreen(intent: Intent?): S {
+    return getScreen(intent, S::class.java)
 }
