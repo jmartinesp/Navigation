@@ -36,8 +36,8 @@ class ActivityConverter<S: Screen>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun getScreenOrNull(activity: FragmentActivity): S? {
-        val args = activity.intent.extras
+    fun getScreenOrNull(intent: Intent): S? {
+        val args = intent.extras
         return when {
             args == null -> null
             Serializable::class.java.isAssignableFrom(screenClass) -> args.getSerializable(
@@ -50,8 +50,8 @@ class ActivityConverter<S: Screen>(
         }
     }
 
-    fun getScreen(activity: FragmentActivity): S {
-        return getScreenOrNull(activity)
+    fun getScreen(intent: Intent): S {
+        return getScreenOrNull(intent)
             ?: throw IllegalArgumentException("Unknown error deserializing Screen. Check if extras are null and Screen is Serializable or Parcelable.")
     }
 
