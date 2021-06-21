@@ -198,7 +198,7 @@ class FragmentNavigator(
     fun popToRoot(): Boolean {
         val fragments = getFragments()
 
-        if (fragments.isEmpty()) return false
+        if (fragments.count() < 2) return false
 
         val transaction = fragmentManager.beginTransaction()
 
@@ -206,13 +206,13 @@ class FragmentNavigator(
 
         fragments.reversed().forEachIndexed { index, fragment ->
             when (index) {
+                0 -> transaction.attach(destinationFragment)
                 fragments.count() - 1 -> {
                     val sourceFragment = fragments[index]
                     val closingAnimation = AnimationData.getAnimationFrom(sourceFragment.arguments)
                     closingAnimation?.toCloseTransition()?.applyBeforeFragmentTransaction(transaction, sourceFragment, destinationFragment)
                     transaction.remove(sourceFragment)
                 }
-                0 -> transaction.attach(destinationFragment)
                 else -> transaction.remove(fragments[index])
             }
         }
@@ -322,7 +322,7 @@ class FragmentNavigator(
 
 }
 
-private fun FragmentTransaction.commit(options: FragmentOptions?) {
+internal fun FragmentTransaction.commit(options: FragmentOptions?) {
     if (options == null) {
         commit()
     } else if (options.allowStateLoss && !options.immediate) {
