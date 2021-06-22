@@ -1,5 +1,6 @@
 package com.arasthel.navigation
 
+import android.app.Application
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import com.arasthel.navigation.base.NavigationActivity
@@ -20,18 +21,15 @@ object AppNavigator {
         private set
     internal val screenResultHandler = ScreenResultHandler()
 
-    fun initialize(context: Context, configuration: Configuration) {
-        this.context = context
+    fun initialize(application: Application, configuration: Configuration) {
+        this.context = application
 
         this.activityNavigator = configuration.activityNavigator
             ?: throw IllegalArgumentException("Configuration must have an ActivityNavigator")
         this.screenRegistry = configuration.screenRegistry
             ?: throw IllegalArgumentException("Configuration must have an ScreenRegistry")
-    }
 
-    fun bindCurrentActivityToNavigationContext(activity: FragmentActivity) {
-        (activity as? NavigationActivity)?.bindContext(activityNavigator)
-        activityNavigator.updateCurrentActivity(activity)
+        application.registerActivityLifecycleCallbacks(activityNavigator)
     }
 
     class Configuration {

@@ -45,13 +45,6 @@ open class NavigationActivity: AppCompatActivity, LifecycleAwareNavigationCompon
         super.onCreate(savedInstanceState)
 
         restoreNavigationId(savedInstanceState)
-        AppNavigator.bindCurrentActivityToNavigationContext(this)
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-
-        AppNavigator.bindCurrentActivityToNavigationContext(this)
     }
 
     fun bindChildNavigator(@IdRes containerId: Int): FragmentNavigator {
