@@ -2,14 +2,9 @@ package com.arasthel.navigation
 
 import android.app.Application
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
-import com.arasthel.navigation.base.NavigationActivity
-import com.arasthel.navigation.base.NavigationComponent
 import com.arasthel.navigation.navigators.ActivityNavigator
 import com.arasthel.navigation.screen.ScreenRegistry
 import com.arasthel.navigation.screen_result.ScreenResultHandler
-import com.arasthel.navigation.viewmodel.bindContext
-import java.lang.IllegalArgumentException
 
 object AppNavigator {
 

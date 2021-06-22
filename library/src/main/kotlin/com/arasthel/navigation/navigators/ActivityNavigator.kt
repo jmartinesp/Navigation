@@ -15,7 +15,6 @@ import com.arasthel.navigation.screen.Screen
 import com.arasthel.navigation.screen.ScreenResult
 import com.arasthel.navigation.utils.ActivityConverter
 import com.arasthel.navigation.viewmodel.bindContext
-import java.lang.ref.WeakReference
 
 class ActivityNavigator(
     id: String,

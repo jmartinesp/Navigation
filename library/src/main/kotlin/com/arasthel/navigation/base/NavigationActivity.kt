@@ -1,21 +1,18 @@
 package com.arasthel.navigation.base
 
 import android.os.Bundle
-import android.transition.Fade
-import android.transition.Slide
-import android.view.Gravity
 import android.view.Window
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import com.arasthel.navigation.*
+import com.arasthel.navigation.AppNavigator
 import com.arasthel.navigation.animations.AnimationData
 import com.arasthel.navigation.navigators.FragmentNavigator
 import com.arasthel.navigation.navigators.Navigator
 import com.arasthel.navigation.navigators.SwitcherNavigator
 import com.arasthel.navigation.viewmodel.bindContext
 import com.arasthel.navigation.viewmodel.getNavigationContext
-import java.util.*
+import java.util.UUID
 
 open class NavigationActivity: AppCompatActivity, LifecycleAwareNavigationComponent {
 
