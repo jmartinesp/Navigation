@@ -78,7 +78,7 @@ class SwitcherNavigator(
                 transaction.attach(destinationFragment)
             }
 
-            transaction.commitNow()
+            transaction.commit(navigationInstruction.fragmentOptions)
 
             if (currentFragment != null) {
                 transitionAnimation?.applyAfterFragmentTransaction(currentFragment, destinationFragment)
