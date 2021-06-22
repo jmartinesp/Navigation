@@ -1,6 +1,9 @@
 package com.arasthel.navigation.navigators
 
+import android.app.Activity
+import android.app.Application
 import android.content.Intent
+import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
@@ -11,16 +14,21 @@ import com.arasthel.navigation.screen.ActivityDestination
 import com.arasthel.navigation.screen.Screen
 import com.arasthel.navigation.screen.ScreenResult
 import com.arasthel.navigation.utils.ActivityConverter
+import com.arasthel.navigation.viewmodel.bindContext
 
 class ActivityNavigator(
     id: String,
     currentActivity: FragmentActivity?,
-): Navigator(id, null) {
+): Navigator(id, null), Application.ActivityLifecycleCallbacks {
 
     private val screenRegistry by lazy { AppNavigator.screenRegistry }
 
     var currentActivity: FragmentActivity? = currentActivity
-        private set
+        private set(value) {
+            if (field === value) return
+            field = value
+            (value as? NavigationActivity)?.bindContext(AppNavigator.activityNavigator)
+        }
 
     fun updateCurrentActivity(activity: FragmentActivity) {
         currentActivity = activity
@@ -122,6 +130,33 @@ class ActivityNavigator(
         animationData?.toActivityAnimation()?.applyAfterActivityStarted(currentActivity)
     }
 
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if (activity !is FragmentActivity) return
+        currentActivity = activity
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        if (activity !is FragmentActivity) return
+        currentActivity = activity
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        if (activity === currentActivity) {
+            currentActivity = null
+        }
+    }
 }
 
 fun MainActivityNavigator(): ActivityNavigator {
