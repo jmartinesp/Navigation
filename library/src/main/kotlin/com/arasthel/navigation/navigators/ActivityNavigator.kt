@@ -131,6 +131,7 @@ class ActivityNavigator(
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        // Needed in case activities with no UI are used
         if (activity !is FragmentActivity) return
         currentActivity = activity
     }
@@ -141,6 +142,8 @@ class ActivityNavigator(
     }
 
     override fun onActivityResumed(activity: Activity) {
+        if (activity !is FragmentActivity) return
+        currentActivity = activity
     }
 
     override fun onActivityPaused(activity: Activity) {
