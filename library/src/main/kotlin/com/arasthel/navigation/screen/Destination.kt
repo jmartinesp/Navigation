@@ -38,4 +38,8 @@ class FragmentDestination(
         (fragmentConverter as FragmentConverter<Screen>).configureFragment(fragment, screen, parentNavigatorId)
     }
 
+    fun updateScreen(fragment: Fragment, screen: Screen) {
+        (fragmentConverter as FragmentConverter<Screen>).updateScreen(fragment, screen)
+    }
+
 }

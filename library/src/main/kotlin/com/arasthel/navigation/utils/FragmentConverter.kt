@@ -32,6 +32,15 @@ class FragmentConverter<S: Screen>(
         fragment.arguments = args
     }
 
+    fun updateScreen(fragment: Fragment, screen: S) {
+        val args = fragment.arguments ?: return
+        when (screen) {
+            is Serializable -> args.putSerializable(SCREEN_KEY, screen)
+            is Parcelable -> args.putParcelable(SCREEN_KEY, screen)
+        }
+        args.putString(SCREEN_CLASS, screen::class.java.name)
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun getScreenOrNull(fragment: Fragment): S? {
         val args = fragment.arguments

@@ -122,6 +122,9 @@ open class NavigationFragment(): Fragment(), LifecycleAwareNavigationComponent {
             ?: "${this::class.java.name}:${UUID.randomUUID()}"
     }
 
+    open fun onScreenUpdated() {
+    }
+
 }
 
 fun <S: Screen> NavigationFragment.getScreenOrNull(clazz: Class<S>): S? {

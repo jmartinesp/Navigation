@@ -75,6 +75,7 @@ class SwitcherNavigator(
             if (isNewFragment) {
                 transaction.add(containerId, destinationFragment, getFragmentTag(fragments.count()))
             } else {
+                destination.updateScreen(destinationFragment, screen)
                 transaction.attach(destinationFragment)
             }
 
@@ -111,7 +112,7 @@ class SwitcherNavigator(
         var fragment = fragmentMap[screen]
         if (fragment == null) {
             fragment = destination.createFragment(screen, id)
-            fragmentMap.put(screen, fragment)
+            fragmentMap[screen] = fragment
             return fragment
         }
         return fragment
