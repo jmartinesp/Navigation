@@ -50,6 +50,10 @@ class MainActivity : NavigationActivity(R.layout.activity_main) {
             TestFragment.count++
         }
 
+        findViewById<Button>(R.id.popRoot).setOnClickListener {
+            childNavigator.popToRoot(TestFragmentScreen(Random.nextInt()))
+        }
+
         findViewById<Button>(R.id.backButton).setOnClickListener {
             childNavigator.pop()
         }
@@ -103,6 +107,12 @@ class TestFragment: NavigationFragment(R.layout.fragment_first) {
         view?.setOnClickListener {
             navigator?.push(OtherScreen("Some text").vertical())
         }
+    }
+
+    override fun onScreenUpdated() {
+        val screen = getScreen<TestFragmentScreen>()
+        Toast.makeText(requireContext(), "New count is ${screen.count}", Toast.LENGTH_LONG).show()
+        view?.findViewById<TextView>(R.id.text)?.text = "Fragment #${screen.count}"
     }
 
 }

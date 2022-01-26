@@ -141,7 +141,7 @@ class FragmentNavigator(
     }
 
     override fun popUntil(screen: Screen): Boolean {
-        return popUntilInternal { fragment ->
+        return popUntilInternal(screen) { fragment ->
             val navigationFragment = fragment as? NavigationFragment ?: return@popUntilInternal false
             navigationFragment.getScreenOrNull(screen::class.java) == screen
         }
@@ -157,7 +157,7 @@ class FragmentNavigator(
         }
     }
 
-    private fun popUntilInternal(predicate: (Fragment) -> Boolean): Boolean {
+    private fun popUntilInternal(screen: Screen? = null, predicate: (Fragment) -> Boolean): Boolean {
         val fragments = getFragments()
 
         if (fragments.isEmpty()) return false
@@ -187,6 +187,12 @@ class FragmentNavigator(
             }
             if (destinationFragment.isDetached) transaction.attach(destinationFragment)
 
+            if (screen != null) {
+                transaction.runOnCommit {
+                    (AppNavigator.screenRegistry.getDestination(destinationFragment) as? FragmentDestination)?.updateScreen(destinationFragment, screen)
+                }
+            }
+
             transaction.commit()
 
             return true
@@ -195,10 +201,18 @@ class FragmentNavigator(
         }
     }
 
-    fun popToRoot(): Boolean {
+    fun popToRoot(screen: Screen? = null): Boolean {
         val fragments = getFragments()
 
-        if (fragments.count() < 2) return false
+        if (fragments.count() < 2) {
+            (fragments.lastOrNull() as? NavigationFragment)?.let { fragment ->
+                if (screen != null && screen.javaClass == AppNavigator.screenRegistry.getScreenClass(fragment)) {
+                    (AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination)?.updateScreen(fragment, screen)
+                    fragment.onScreenUpdated()
+                }
+            }
+            return false
+        }
 
         val transaction = fragmentManager.beginTransaction()
 
@@ -206,7 +220,13 @@ class FragmentNavigator(
 
         fragments.reversed().forEachIndexed { index, fragment ->
             when (index) {
-                0 -> transaction.attach(destinationFragment)
+                0 -> {
+                    val destination = AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination
+                    if (screen != null && screen.javaClass == AppNavigator.screenRegistry.getScreenClass(destinationFragment)) {
+                        destination?.updateScreen(destinationFragment, screen)
+                    }
+                    transaction.attach(destinationFragment)
+                }
                 fragments.count() - 1 -> {
                     val sourceFragment = fragments[index]
                     val closingAnimation = AnimationData.getAnimationFrom(sourceFragment.arguments)
@@ -250,8 +270,7 @@ class FragmentNavigator(
     override fun replace(navigationInstruction: NavigationInstruction) {
         val screenRegistry = AppNavigator.screenRegistry
         val screen = navigationInstruction.screen
-        val destination = screenRegistry.getDestination(screen)
-        when (destination) {
+        when (val destination = screenRegistry.getDestination(screen)) {
             is ActivityDestination -> activityNavigator?.replace(navigationInstruction)
             is FragmentDestination -> {
                 val destinationFragment = destination.createFragment(screen, id)
@@ -284,8 +303,7 @@ class FragmentNavigator(
 
         val screenRegistry = AppNavigator.screenRegistry
         val screen = navigationInstruction.screen
-        val destination = screenRegistry.getDestination(screen)
-        when (destination) {
+        when (val destination = screenRegistry.getDestination(screen)) {
             is ActivityDestination -> activityNavigator?.reset(navigationInstruction)
             is FragmentDestination -> {
                 val destinationFragment = destination.createFragment(screen, id)
