@@ -20,7 +20,7 @@ class SwitcherNavigator(
         initFragmentMap()
     }
 
-    private var fragmentMap = mutableMapOf<Screen, Fragment>()
+    private var fragmentMap = mutableMapOf<Class<Screen>, Fragment>()
 
     override fun push(navigationInstruction: NavigationInstruction) {
         push(navigationInstruction, null)
@@ -61,6 +61,12 @@ class SwitcherNavigator(
         if (destination is FragmentDestination) {
             val destinationFragment = getOrCreateFragment(screen, destination)
 
+            if (currentFragment == destinationFragment) {
+                destination.updateScreen(destinationFragment, screen)
+                (destinationFragment as? NavigationFragment)?.onScreenUpdated()
+                return
+            }
+
             val fragments = getFragments()
             val isNewFragment = !fragments.contains(destinationFragment)
             val transaction = fragmentManager.beginTransaction()
@@ -90,7 +96,7 @@ class SwitcherNavigator(
     private fun initFragmentMap() {
         fragmentMap = getFragments().mapNotNull { fragment ->
             val screen = getScreen(fragment) ?: return@mapNotNull null
-            screen to fragment
+            screen.javaClass to fragment
         }.toMap().toMutableMap()
     }
 
@@ -109,10 +115,10 @@ class SwitcherNavigator(
     }
 
     private fun <S: Screen> getOrCreateFragment(screen: S, destination: FragmentDestination): Fragment {
-        var fragment = fragmentMap[screen]
+        var fragment = fragmentMap[screen.javaClass]
         if (fragment == null) {
             fragment = destination.createFragment(screen, id)
-            fragmentMap[screen] = fragment
+            fragmentMap[screen.javaClass] = fragment
             return fragment
         }
         return fragment
