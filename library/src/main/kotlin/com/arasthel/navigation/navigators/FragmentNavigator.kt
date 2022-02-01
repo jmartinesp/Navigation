@@ -190,6 +190,7 @@ class FragmentNavigator(
             if (screen != null) {
                 transaction.runOnCommit {
                     (AppNavigator.screenRegistry.getDestination(destinationFragment) as? FragmentDestination)?.updateScreen(destinationFragment, screen)
+                    (destinationFragment as? NavigationFragment)?.onScreenUpdated()
                 }
             }
 

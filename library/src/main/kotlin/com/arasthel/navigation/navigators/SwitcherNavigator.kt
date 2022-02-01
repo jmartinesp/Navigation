@@ -82,7 +82,9 @@ class SwitcherNavigator(
                 transaction.add(containerId, destinationFragment, getFragmentTag(fragments.count()))
             } else {
                 destination.updateScreen(destinationFragment, screen)
-                transaction.attach(destinationFragment)
+                transaction.attach(destinationFragment).runOnCommit {
+                    (destinationFragment as? NavigationFragment)?.onScreenUpdated()
+                }
             }
 
             transaction.commit(navigationInstruction.fragmentOptions)
