@@ -188,9 +188,12 @@ class FragmentNavigator(
             if (destinationFragment.isDetached) transaction.attach(destinationFragment)
 
             if (screen != null) {
-                transaction.runOnCommit {
-                    (AppNavigator.screenRegistry.getDestination(destinationFragment) as? FragmentDestination)?.updateScreen(destinationFragment, screen)
-                    (destinationFragment as? NavigationFragment)?.onScreenUpdated()
+                val destination = AppNavigator.screenRegistry.getDestination(screen) as? FragmentDestination
+                if (screen !== destination?.fragmentConverter?.getScreen(destinationFragment)) {
+                    destination?.updateScreen(destinationFragment, screen)
+                    transaction.runOnCommit {
+                        (destinationFragment as? NavigationFragment)?.onScreenUpdated()
+                    }
                 }
             }
 
