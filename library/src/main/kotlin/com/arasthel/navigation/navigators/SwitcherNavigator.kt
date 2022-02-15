@@ -62,7 +62,8 @@ class SwitcherNavigator(
             val destinationFragment = getOrCreateFragment(screen, destination)
 
             if (currentFragment == destinationFragment) {
-                if (screen !== destination.fragmentConverter.getScreen(destinationFragment)) {
+                val destinationScreen = destination.fragmentConverter.getScreen(destinationFragment)
+                if (screen.javaClass == destinationScreen.javaClass && screen !== destinationScreen) {
                     destination.updateScreen(destinationFragment, screen)
                     (destinationFragment as? NavigationFragment)?.onScreenUpdated()
                 }
@@ -83,7 +84,8 @@ class SwitcherNavigator(
             if (isNewFragment) {
                 transaction.add(containerId, destinationFragment, getFragmentTag(fragments.count()))
             } else {
-                if (screen !== destination.fragmentConverter.getScreen(destinationFragment)) {
+                val destinationScreen = destination.fragmentConverter.getScreen(destinationFragment)
+                if (screen.javaClass == destinationScreen.javaClass && screen !== destinationScreen) {
                     destination.updateScreen(destinationFragment, screen)
                     transaction.runOnCommit {
                         (destinationFragment as? NavigationFragment)?.onScreenUpdated()

@@ -189,8 +189,9 @@ class FragmentNavigator(
 
             if (screen != null) {
                 val destination = AppNavigator.screenRegistry.getDestination(screen) as? FragmentDestination
-                if (screen !== destination?.fragmentConverter?.getScreen(destinationFragment)) {
-                    destination?.updateScreen(destinationFragment, screen)
+                val destinationScreen = destination?.fragmentConverter?.getScreen(destinationFragment)
+                if (screen.javaClass == destinationScreen?.javaClass && screen !== destinationScreen) {
+                    destination.updateScreen(destinationFragment, screen)
                     transaction.runOnCommit {
                         (destinationFragment as? NavigationFragment)?.onScreenUpdated()
                     }
@@ -210,7 +211,9 @@ class FragmentNavigator(
 
         if (fragments.count() < 2) {
             (fragments.lastOrNull() as? NavigationFragment)?.let { fragment ->
-                if (screen != null && screen.javaClass == AppNavigator.screenRegistry.getScreenClass(fragment)) {
+                val destination = AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination
+                val destinationScreen = destination?.fragmentConverter?.getScreen(fragment)
+                if (screen != null && screen.javaClass == destinationScreen?.javaClass && screen !== destinationScreen) {
                     (AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination)?.updateScreen(fragment, screen)
                     fragment.onScreenUpdated()
                 }
@@ -226,8 +229,10 @@ class FragmentNavigator(
             when (index) {
                 0 -> {
                     val destination = AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination
-                    if (screen != null && screen.javaClass == AppNavigator.screenRegistry.getScreenClass(destinationFragment)) {
-                        destination?.updateScreen(destinationFragment, screen)
+                    val destinationScreen = destination?.fragmentConverter?.getScreen(fragment)
+                    if (screen != null && screen.javaClass == destinationScreen?.javaClass && screen !== destinationScreen) {
+                        destination.updateScreen(destinationFragment, screen)
+                        transaction.runOnCommit { (destinationFragment as? NavigationFragment)?.onScreenUpdated() }
                     }
                     transaction.attach(destinationFragment)
                 }
