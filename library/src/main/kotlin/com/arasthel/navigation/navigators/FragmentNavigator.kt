@@ -228,8 +228,8 @@ class FragmentNavigator(
         fragments.reversed().forEachIndexed { index, fragment ->
             when (index) {
                 0 -> {
-                    val destination = AppNavigator.screenRegistry.getDestination(fragment) as? FragmentDestination
-                    val destinationScreen = destination?.fragmentConverter?.getScreen(fragment)
+                    val destination = AppNavigator.screenRegistry.getDestination(destinationFragment) as? FragmentDestination
+                    val destinationScreen = destination?.fragmentConverter?.getScreen(destinationFragment)
                     if (screen != null && screen.javaClass == destinationScreen?.javaClass && screen !== destinationScreen) {
                         destination.updateScreen(destinationFragment, screen)
                         transaction.runOnCommit { (destinationFragment as? NavigationFragment)?.onScreenUpdated() }
