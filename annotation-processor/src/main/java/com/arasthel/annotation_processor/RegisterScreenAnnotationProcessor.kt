@@ -11,7 +11,11 @@ import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.*
 
-class RegisterScreenAnnotationProcessor: SymbolProcessor {
+class RegisterScreenAnnotationProcessor(
+    private val codeGenerator: CodeGenerator,
+    private val logger: KSPLogger,
+    private val options: Map<String, String>
+): SymbolProcessor {
 
     companion object {
         val ANNOTATION_NAME = RegisterScreen::class.qualifiedName!!
@@ -21,26 +25,13 @@ class RegisterScreenAnnotationProcessor: SymbolProcessor {
         private const val SUPERCLASS_NAME = "ScreenRegistry"
     }
 
-    lateinit var codeGenerator: CodeGenerator
-    lateinit var logger: KSPLogger
-
-    override fun init(
-        options: Map<String, String>,
-        kotlinVersion: KotlinVersion,
-        codeGenerator: CodeGenerator,
-        logger: KSPLogger
-    ) {
-        this.codeGenerator = codeGenerator
-        this.logger = logger
-    }
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val mappings = mutableMapOf<KSName, AnnotatedClass>()
         val annotatedClassesToReturn = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME)
         logger.info("Found ${annotatedClassesToReturn.count()} classes")
 
         val annotatedClasses = annotatedClassesToReturn
-            .mapNotNull { it as? KSClassDeclaration }
+            .mapNotNull { it as? KSClassDeclaration }.toList()
 
         if (annotatedClasses.isEmpty()) return emptyList()
 

@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp") version "1.4.30-1.0.0-alpha04"
+    id("com.google.devtools.ksp") version KSP.version
 }
 
 repositories {
@@ -12,12 +12,12 @@ repositories {
 
 android {
     compileSdkVersion(29)
-    buildToolsVersion("30.0.2")
+    buildToolsVersion("30.0.3")
 
     defaultConfig {
         applicationId = "com.arasthel.navigation_experiment"
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
 

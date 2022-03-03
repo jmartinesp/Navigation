@@ -17,5 +17,5 @@ repositories {
 dependencies {
     implementation(Kotlin.std)
     implementation("com.squareup:kotlinpoet:1.7.2")
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.4.30-1.0.0-alpha04")
+    implementation("com.google.devtools.ksp:symbol-processing-api:${KSP.version}")
 }
